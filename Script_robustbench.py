@@ -3,6 +3,7 @@ import sys
 import argparse
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
+from torchattacks import PGD
 from robustbench import load_model
 from utils import *
 from tqdm import *
@@ -161,6 +162,8 @@ if __name__ == '__main__':
         model_filename = f"./{args.log_dir}/DDPM-{args.dataset}-{args.classifier_name}-{args.iterations}.pt"
         diffusion = torch.load(model_filename)
         Attack_FASN(classifier, test_loader, Gen=diffusion, attack=None)
+
+        Attack_FASN(classifier, test_loader, Gen=diffusion, attack=PGD(classifier, eps=8 / 255))
 
 
 
