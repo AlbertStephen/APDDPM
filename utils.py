@@ -32,7 +32,7 @@ def Purification(data, label, Gen):
     return data - noise
 
 
-def Attack_FASN(model, dataloader, Gen= None, attack=None, stop_index= 10):
+def Attack_FASN(model, dataloader, Gen= None, attack=None, stop_index= 30):
     correct = 0
     sum = 0
     for index, (data, target) in enumerate(dataloader):
