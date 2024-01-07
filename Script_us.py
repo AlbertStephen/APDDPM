@@ -119,7 +119,6 @@ class contrastive_loss(torch.nn.Module):
         return loss
 
 def create_argparser(iterations= 50, dataset= "cifar10", classifier_name= None, image_size= 32, batch_size= 128):
-
     # # Specify model parameters
     defaults = dict(
         image_size= image_size,
@@ -142,24 +141,18 @@ def ddpm_from_params(iterations=50, dataset= "cifar10", classifier_name= None):
 
 if __name__ == '__main__':
     # # parameters setting
-    dataset_list = ["cifar10", "cifar10", "cifar100", "cifar100"]
-    classifier_name = ["ResNet18", "ResNet50", "PreactResNet18", "WideResNet28_10"]
-
+    dataset, classifier = "cifar10", "ResNet18"
+    args = create_argparser(iterations= 50, dataset=dataset, classifier_name= classifier).parse_args()
+    train_loader, test_loader = load_Data(args.dataset, args.image_size, args.batch_size)
+    classifier = torch.load(f"{args.log_dir}/{args.dataset}-{args.classifier_name}.pt")
     # # Train Phase
-    # for i in range(len(dataset_list)):
-    #     args = create_argparser(iterations= 2, dataset=dataset_list[i], classifier_name= classifier_name[i]).parse_args()
-    #     train_loader, test_loader = load_Data(args.dataset, args.image_size, args.batch_size)
-    #     classifier = torch.load(f"{args.log_dir}/{args.dataset}-{args.classifier_name}.pt")
-    #     main(args)
+    # main(args)
 
     # # Testing Phase
-    for i in range(len(classifier_name)):
-        args = create_argparser(iterations=50, dataset=dataset_list[i], classifier_name=classifier_name[i]).parse_args()
-        train_loader, test_loader = load_Data(args.dataset, args.image_size, args.batch_size)
-        classifier = torch.load(f"{args.log_dir}/{args.dataset}-{args.classifier_name}.pt")
-        model_filename = f"{args.log_dir}/DDPM-{args.dataset}-{args.classifier_name}-{args.iterations}.pt"
-        diffusion = torch.load(model_filename)
-        Attack_FASN(classifier, test_loader, Gen=diffusion, attack=None)
+    model_filename = f"{args.log_dir}/DDPM-{args.dataset}-{args.classifier_name}-{args.iterations}.pt"
+    diffusion = torch.load(model_filename)
+    Attack_FASN(classifier, test_loader, Gen=diffusion, attack=None)
+
 
 
 
